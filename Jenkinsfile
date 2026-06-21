@@ -22,9 +22,11 @@ pipeline {
         }
 <<<<<<< HEAD
 
-      stage('Run Tests') {
+     stage('Run Tests') {
     steps {
-        sh '/var/lib/jenkins/.local/bin/pytest'
+        sh 'python3 -m pytest'
+    }
+}
 =======
         
         stage('Run Tests') {
