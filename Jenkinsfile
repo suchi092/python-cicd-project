@@ -20,10 +20,17 @@ pipeline {
                 sh 'pip3 install -r requirements.txt'
             }
         }
+<<<<<<< HEAD
 
       tage('Run Tests') {
     steps {
         sh '/var/lib/jenkins/.local/bin/pytest'
+=======
+        
+        stage('Run Tests') {
+            steps {
+                sh '/var/lib/jenkins/.local/bin/pytest'
+>>>>>>> ada40f0 (last comment)
     }
 }
 
@@ -70,4 +77,8 @@ pipeline {
             }
         }
     }
+<<<<<<< HEAD
 }
+=======
+}
+>>>>>>> ada40f0 (last comment)
