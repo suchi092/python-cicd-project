@@ -22,10 +22,10 @@ pipeline {
         }
 
         stage('Run Tests') {
-            steps {
-                sh 'pytest'
-            }
-        }
+    steps {
+        sh '/var/lib/jenkins/.local/bin/pytest'
+    }
+}
 
         stage('Build Docker Image') {
             steps {
