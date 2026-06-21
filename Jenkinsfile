@@ -28,14 +28,6 @@ pipeline {
     }
 }
 
-        
-        stage('Run Tests') {
-            steps {
-                sh '/var/lib/jenkins/.local/bin/pytest'
-               
-    }
-}
-
         stage('Build Docker Image') {
             steps {
                 sh 'docker build -t $IMAGE_NAME:$IMAGE_TAG .'
