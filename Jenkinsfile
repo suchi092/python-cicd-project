@@ -21,7 +21,7 @@ pipeline {
             }
         }
 
-        stage('Run Tests') {
+      tage('Run Tests') {
     steps {
         sh '/var/lib/jenkins/.local/bin/pytest'
     }
