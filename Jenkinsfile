@@ -1,78 +1,85 @@
 pipeline {
-    agent any
+agent any
 
-    environment {
-        IMAGE_NAME = "suchi411/python-cicd"
-        IMAGE_TAG = "${BUILD_NUMBER}"
-    }
-
-    stages {
-
-        stage('Checkout') {
-            steps {
-                git branch: 'main',
-                    url: 'https://github.com/suchi092/python-cicd-project.git'
-            }
-        }
-
-        stage('Install Dependencies') {
-            steps {
-                sh 'pip3 install -r requirements.txt'
-            }
-        }
-
-        // stage('Run Tests') {
-        //     steps {
-        //         sh 'pytest'
-        //     }
-        // }
-        stage('Run Tests') {
-    steps {
-        sh '/var/lib/jenkins/.local/bin/pytest'
-    }
+```
+environment {
+    IMAGE_NAME = "suchi411/python-cicd"
+    IMAGE_TAG  = "${BUILD_NUMBER}"
 }
 
-        stage('Build Docker Image') {
-            steps {
-                sh 'docker build -t $IMAGE_NAME:$IMAGE_TAG .'
-            }
+stages {
+
+    stage('Checkout') {
+        steps {
+            git branch: 'main',
+                url: 'https://github.com/suchi092/python-cicd-project.git'
         }
+    }
 
-        stage('Docker Login') {
-            steps {
-                withCredentials([
-                    usernamePassword(
-                        credentialsId: 'dockerhub',
-                        usernameVariable: 'suchi411',
-                        passwordVariable: 'dckr_pat_U0sce8EA4xo6-7CPuI2Xvh1JsGg'
-                    )
-                ]) {
-
-                    sh '''
-                    echo $PASS | docker login -u $USER --password-stdin
-                    '''
-                }
-            }
+    stage('Install Dependencies') {
+        steps {
+            sh 'pip3 install -r requirements.txt'
         }
+    }
 
-        stage('Push Docker Image') {
-            steps {
-                sh 'docker push $IMAGE_NAME:$IMAGE_TAG'
-            }
+    stage('Run Tests') {
+        steps {
+            sh '/var/lib/jenkins/.local/bin/pytest'
         }
+    }
 
-        stage('Deploy') {
-            steps {
+    stage('Docker Login') {
+        steps {
+            withCredentials([
+                usernamePassword(
+                    credentialsId: 'dockerhub',
+                    usernameVariable: 'USER',
+                    passwordVariable: 'PASS'
+                )
+            ]) {
                 sh '''
-                docker stop python-app || true
-                docker rm python-app || true
-
-                docker run -d \
-                --name python-app \
-                -p 5000:5000 \
-                $IMAGE_NAME:$IMAGE_TAG
+                echo $PASS | docker login -u $USER --password-stdin
                 '''
             }
         }
     }
+
+    stage('Build Docker Image') {
+        steps {
+            sh 'docker build -t $IMAGE_NAME:$IMAGE_TAG .'
+        }
+    }
+
+    stage('Push Docker Image') {
+        steps {
+            sh 'docker push $IMAGE_NAME:$IMAGE_TAG'
+        }
+    }
+
+    stage('Deploy') {
+        steps {
+            sh '''
+            docker stop python-app || true
+            docker rm python-app || true
+
+            docker run -d \
+            --name python-app \
+            -p 5000:5000 \
+            $IMAGE_NAME:$IMAGE_TAG
+            '''
+        }
+    }
+}
+
+post {
+    success {
+        echo 'Pipeline executed successfully!'
+    }
+
+    failure {
+        echo 'Pipeline failed!'
+    }
+}
+```
+
 }
