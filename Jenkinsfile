@@ -2,7 +2,7 @@ pipeline {
     agent any
 
     environment {
-        IMAGE_NAME = "suchitra/python-cicd"
+        IMAGE_NAME = "suchi411/python-cicd"
         IMAGE_TAG = "${BUILD_NUMBER}"
     }
 
