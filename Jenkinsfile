@@ -22,7 +22,7 @@ pipeline {
         }
 <<<<<<< HEAD
 
-      tage('Run Tests') {
+      stage('Run Tests') {
     steps {
         sh '/var/lib/jenkins/.local/bin/pytest'
 =======
