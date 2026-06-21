@@ -21,12 +21,11 @@ pipeline {
             }
         }
 
-
-    stage('Run Tests') {
-    steps {
-        sh 'python3 -m pytest'
-    }
-}
+        stage('Run Tests') {
+            steps {
+                sh 'python3 -m pytest'
+            }
+        }
 
         stage('Build Docker Image') {
             steps {
@@ -43,7 +42,6 @@ pipeline {
                         passwordVariable: 'PASS'
                     )
                 ]) {
-
                     sh '''
                     echo $PASS | docker login -u $USER --password-stdin
                     '''
@@ -64,12 +62,21 @@ pipeline {
                 docker rm python-app || true
 
                 docker run -d \
-                --name python-app \
-                -p 5000:5000 \
-                $IMAGE_NAME:$IMAGE_TAG
+                  --name python-app \
+                  -p 5000:5000 \
+                  $IMAGE_NAME:$IMAGE_TAG
                 '''
             }
         }
     }
-}
 
+    post {
+        success {
+            echo 'Pipeline executed successfully!'
+        }
+
+        failure {
+            echo 'Pipeline failed!'
+        }
+    }
+}
